@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nama Japa Mala</title>
+
+    <style>
+        body {
+            font-family: Georgia, serif;
+            background: radial-gradient(circle, #fff3e0, #ffe0b2);
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #6a1b9a;
+            margin-bottom: 5px;
+        }
+
+        .mantra {
+            background: white;
+            padding: 14px;
+            border-radius: 10px;
+            max-width: 520px;
+            margin: 10px auto;
+            line-height: 1.6;
+            font-size: 18px;
+        }
+
+        .counter {
+            font-size: 28px;
+            margin: 10px;
+            color: #1b5e20;
+        }
+
+        /* Circular mala */
+        .circle {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 30px auto;
+        }
+
+        .bead {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #d7ccc8;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .bead.active {
+            background: #ff7043;
+            box-shadow: 0 0 8px #ff7043;
+        }
+
+        button {
+            padding: 10px 16px;
+            margin: 6px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .chant {
+            background: #ff9800;
+        }
+
+        .auto {
+            background: #4caf50;
+        }
+
+        .stop {
+            background: #f44336;
+        }
+
+        .reset {
+            background: #455a64;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>📿 Nama Japa Mala 📿</h1>
+
+    <div class="mantra">
+        Hare Krishna Hare Krishna<br>
+        Krishna Krishna Hare Hare<br>
+        Hare Rama Hare Rama<br>
+        Rama Rama Hare Hare
+    </div>
+
+    <div class="counter" id="count">0 / 108</div>
+
+    <div class="circle" id="mala"></div>
+
+    <button class="chant" onclick="chant()">Chant +1</button><br>
+    <button class="auto" onclick="startAuto()">Auto Chant</button>
+    <button class="stop" onclick="stopAuto()">Stop</button>
+    <button class="reset" onclick="resetMala()">Reset</button>
+
+    <footer>
+        🔔 Bell rings on every bead • 108 chants = 1 Mala
+    </footer>
+
+    <!-- Bell sound -->
+    <audio id="bell">
+        <source src="bell.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const totalBeads = 108;
+        const radius = 130;
+        const center = 150;
+
+        let count = 0;
+        let interval = null;
+
+        const mala = document.getElementById("mala");
+        const countDiv = document.getElementById("count");
+        const bell = document.getElementById("bell");
+        const beads = [];
+
+        // Create circular beads
+        for (let i = 0; i < totalBeads; i++) {
+            const angle = (2 * Math.PI / totalBeads) * i;
+            const bead = document.createElement("div");
+            bead.className = "bead";
+
+            const x = center + radius * Math.cos(angle) - 8;
+            const y = center + radius * Math.sin(angle) - 8;
+
+            bead.style.left = x + "px";
+            bead.style.top = y + "px";
+
+            mala.appendChild(bead);
+            beads.push(bead);
+        }
+
+        function chant() {
+            if (count < totalBeads) {
+                beads[count].classList.add("active");
+                count++;
+                countDiv.innerText = count + " / 108";
+
+                bell.currentTime = 0;
+                bell.play();
+            }
+        }
+
+        function startAuto() {
+            if (!interval) {
+                interval = setInterval(chant, 1200);
+            }
+        }
+
+        function stopAuto() {
+            clearInterval(interval);
+            interval = null;
+        }
+
+        function resetMala() {
+            stopAuto();
+            count = 0;
+            countDiv.innerText = "0 / 108";
+            beads.forEach(b => b.classList.remove("active"));
+        }
+    </script>
+
+</body>
+
+</html>
